@@ -1,5 +1,5 @@
 __author__ = 'eremeykin'
-from binarization import get_data
+from data_preparation import get_data
 import pandas as pd
 
 class Classifier(object):

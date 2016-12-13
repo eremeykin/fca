@@ -1,6 +1,6 @@
 from pprint import pprint
-from context import Context
-from clouse_by_one import close_by_one, build_lattice
+from context_old import Context
+from close_by_one import close_by_one, build_lattice
 
 
 class Rule():
