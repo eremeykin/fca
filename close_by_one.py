@@ -50,6 +50,7 @@ def __derive(context, result, vertex):
     if vertex.is_canonical():
         result.add(vertex)
         for child in children:
+            print(len(result))
             __derive(context, result, child)
 
 

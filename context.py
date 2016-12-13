@@ -5,8 +5,8 @@ import pandas as pd
 class Context(object):
     def __init__(self, matrix):
         self.df = matrix
-        self.g_size = matrix.shape[0]
-        self.m_size = matrix.shape[1]
+        self.g_size = self.df.shape[0]
+        self.m_size = self.df.shape[1]
 
     def m_to_g(self, attributes):
         mask = pd.Series(data=True, index=self.df.index)
@@ -25,6 +25,12 @@ class Context(object):
 
     def attributes_names(self):
         return sorted(list(self.df.columns))
+
+    def transpose(self):
+        self.df = self.df.transpose()
+        self.g_size = self.df.shape[0]
+        self.m_size = self.df.shape[1]
+
 
     def __str__(self):
         return str(self.df)

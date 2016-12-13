@@ -28,14 +28,15 @@ headers = {
 }
 
 
-def expand_feature(feature, dframe):
+def _expand_feature(feature, dframe):
+    """ expand feature from multi-valued to several 0/1 valued features"""
     unique_value = feature.unique()
     for value in unique_value:
         dframe[feature.name + value] = (feature == value).apply(int)
     return dframe
 
-
 def get_raw_data():
+    """ returns data as is, in multi-valued form """
     data = pd.read_csv('data_set/data.csv', index_col=False)
     label = data['label']
     del data['label']
@@ -43,12 +44,13 @@ def get_raw_data():
 
 
 def get_data():
+    """ returns expended data in 0/1 form """
     df, ds = get_raw_data()
     data = pd.DataFrame()
     label = pd.Series()
     for f in df.columns:
-        data = expand_feature(df[f], data)
-    label = expand_feature(ds, label)['labele']
+        data = _expand_feature(df[f], data)
+    label = _expand_feature(ds, label)['labele']
     label.name = 'label'
     return data, label
 
@@ -58,6 +60,11 @@ def intersect(target, row):
 
 
 if __name__ == "__main__":
-    d, l = get_raw_data()
-    print(l)
-    print(intersect(d.loc[1], d.loc[0]))
+    d, l = get_data()
+    d = d[:20]
+    l = l[:20]
+    print(d)
+    from close_by_one import close_by_one
+    from context import Context
+    concepts = close_by_one(Context(d))
+    print(concepts)
