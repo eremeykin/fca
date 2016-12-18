@@ -78,7 +78,7 @@ class Aggregator(object):
         final_counter.both /= total
         return final_counter
 
-    def plot_3d_hist(self):
+    def plot_3d_hist(self, norm=True):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         x = [0.5, 0.5, 1.5, 1.5]  # x coordinates of each bar
@@ -87,10 +87,11 @@ class Aggregator(object):
         dx = [0.95, 0.95, 0.95, 0.95]  # width of each bar
         dy = [0.95, 0.95, 0.95, 0.95]  # depth of each bar
         agr = self.get_norm_aggregate()
+        if not norm:
+            agr = self.get_aggregate()
         dz = [agr.positive_negative, agr.positive_positive, agr.negative_negative,
               agr.negative_positive]  # height of each bar
         col = ['r', 'b', 'b', 'r']
-
         ax.bar3d(x, y, z, dx, dy, dz, color=col, zsort='average')
         axes = plt.gca()
         axes.set_zlim([0, 1])

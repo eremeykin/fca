@@ -28,8 +28,12 @@ class AbstractClassifier(object):
 
 
 class ImplicationClassifier(AbstractClassifier):
+
+    SEED1 = 12332513
+    SEED2 = 43289
+    random.seed(SEED2)
+
     def predict(self, target, num_sub=None):
-        print('predict: ' + str(target))
         if not self.trained:
             raise Exception('The classifier is not trained yet')
         if num_sub is None:
@@ -37,22 +41,18 @@ class ImplicationClassifier(AbstractClassifier):
         neg = 0
         pos = 0
         for i in range(num_sub):
-            t = target.sample(n=random.randrange(len(target)))
-            p = self.positive.map(lambda x: issuper(x, t))
-            for index, j in self.positive.iterrows():
-                if issuper(j, t):
-                    pos += len(t)
-            for index, k in self.negative.iterrows():
-                if issuper(k, t):
-                    neg += len(t)
+            t = target.sample(n=random.randrange(len(target)),
+                              random_state=ImplicationClassifier.SEED1)
+            pos += self.positive.apply(lambda x: int(issuper(x, t)), axis=1).sum()
+            neg += self.negative.apply(lambda x: int(issuper(x, t)), axis=1).sum()
+
 
         def score(pos, neg):
             return pos * 1. / (neg + 1)
 
-        threshold = 1.1
-        if score(pos, neg) > threshold:
+        if score(pos, neg) > self.threshold:
             return POSITIVE_LABEL
-        elif score(neg, pos) > threshold:
+        elif score(neg, pos) > self.threshold:
             return NEGATIVE_LABEL
         else:
             return UNKNOWN_LABEL
