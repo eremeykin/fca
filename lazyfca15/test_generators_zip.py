@@ -54,7 +54,7 @@ def check_hypothesis(context_plus, context_minus, example):
     for e in context_plus:
         ei = make_intent(e)
         candidate_intent = ei & eintent
-        closure = [ make_intent(i) for i in context_minus if make_intent(i).issuperset(candidate_intent)]
+        closure  = [ make_intent(i) for i in context_minus if make_intent(i).issuperset(candidate_intent)]
         closure_size = len([i for i in closure if len(i)])
     #    print closure
         #print closure_size * 1.0 / len(context_minus)
