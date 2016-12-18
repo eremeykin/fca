@@ -1,3 +1,4 @@
+__author__ = 'eremeykin'
 from pprint import pprint
 from concept import Concept
 from context import Context

@@ -1,58 +1,63 @@
-__author__ = 'eremeykin'
+import random
+
 from data_preparation import *
+from labels import *
 import pandas as pd
 
+from numpy_set_operations import *
 
-class Classifier(object):
-    def __init__(self, learn_data):
-        self.positive = learn_data[learn_data['label'] == 'e']
-        self.negative = learn_data[learn_data['label'] == 'p']
+__author__ = 'eremeykin'
+
+
+class AbstractClassifier(object):
+    def __init__(self, threshold):
+        self.trained = False
+        self.positive = None
+        self.negative = None
+        self.threshold = threshold
+
+    def train(self, train_data):
+        self.positive = train_data[train_data['label'] == POSITIVE_LABEL]
+        self.negative = train_data[train_data['label'] == NEGATIVE_LABEL]
         del self.positive['label']
         del self.negative['label']
-
-    @staticmethod
-    def _intersect(row1, row2):
-        return row1[row1 == row2]
-
-    @staticmethod
-    def _issuper(sup, sub):
-        sup[sub.index].equals(sub)
+        self.trained = len(self.positive) > 0 and len(self.negative) > 0
 
     def predict(self, target):
-        positive_score = 0
-        print('\n<target>')
-        print(target)
-        print('</target>\n')
-        for index_p, row_p in self.positive.iterrows():
-            intersect = Classifier._intersect(target, row_p)
-            for index_n, row_n in self.negative.iterrows():
-                if Classifier._issuper(row_n, intersect):
-                    pass
-                else:
-                    positive_score += 1
-        negative_score = 0
-        for index_n, row_n in self.negative.iterrows():
-            intersect = Classifier._intersect(target, row_n)
-            for index_p, row_p in self.positive.iterrows():
-                if not Classifier._issuper(row_p, intersect):
-                    negative_score += 1
-        print('p: ' + str(positive_score) + ' n: ' + str(negative_score))
+        raise Exception('abstract method')
 
+
+class ImplicationClassifier(AbstractClassifier):
+    def predict(self, target, num_sub=None):
+        print('predict: ' + str(target))
+        if not self.trained:
+            raise Exception('The classifier is not trained yet')
+        if num_sub is None:
+            num_sub = len(target) // 2
+        neg = 0
+        pos = 0
+        for i in range(num_sub):
+            t = target.sample(n=random.randrange(len(target)))
+            p = self.positive.map(lambda x: issuper(x, t))
+            for index, j in self.positive.iterrows():
+                if issuper(j, t):
+                    pos += len(t)
+            for index, k in self.negative.iterrows():
+                if issuper(k, t):
+                    neg += len(t)
+
+        def score(pos, neg):
+            return pos * 1. / (neg + 1)
+
+        threshold = 1.1
+        if score(pos, neg) > threshold:
+            return POSITIVE_LABEL
+        elif score(neg, pos) > threshold:
+            return NEGATIVE_LABEL
+        else:
+            return UNKNOWN_LABEL
 
 if __name__ == '__main__':
-    data = get_raw_data('data0.csv')
+    data = get_raw_data('data.csv')
     train = data.iloc[:8]
     test = data.iloc[8:]
-    test_label = test['label']
-    del test['label']
-    print(train)
-    c = Classifier(train)
-    predicted = pd.Series(None, index=test.index)
-    print(test)
-    for index, row in test.iterrows():
-        c.predict(row)
-        # test['predicted'] = predicted
-        # print(test[['label', 'predicted']])
-        # print((test['label'] == test['predicted']).sum())
-
-

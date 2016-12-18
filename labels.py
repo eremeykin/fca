@@ -1,0 +1,5 @@
+__author__ = 'eremeykin'
+POSITIVE_LABEL = 'e'
+NEGATIVE_LABEL = 'p'
+UNKNOWN_LABEL = 'u'
+BOTH_LABEL = 'b'
