@@ -1,5 +1,5 @@
 from aggregator import Aggregator
-from classifier import AbstractClassifier, ImplicationClassifier
+from classifier import *
 from data_preparation import *
 from labels import *
 from pprint import pprint
@@ -38,8 +38,9 @@ class Validator(object):
 
 
 if __name__ == "__main__":
-    d = get_raw_data('data.csv').sample(n=200, random_state=8755)
-    c = ImplicationClassifier(1.5)
+    d = get_raw_data('data.csv').sample(n=4000, random_state=8755)
+    # c = ImplicationClassifier(1.3)
+    c = MyClassifier(1.5)
     val = Validator(d, c)
     val.validate(test_frame=0.1)
     pprint(val.aggregator.get_norm_aggregate())
