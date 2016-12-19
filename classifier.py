@@ -2,6 +2,7 @@ import random
 
 from data_preparation import *
 from labels import *
+import numpy as np
 import pandas as pd
 
 from numpy_set_operations import *
@@ -85,10 +86,16 @@ class MyClassifier(AbstractClassifier):
                 neg += self.neg_dict[index][value]
             except:
                 pass
-        if pos >= neg:
+
+        def score(pos, neg):
+            return pos * 1. / neg if neg != 0 else np.infty
+
+        if score(pos, neg) > self.threshold:
             return POSITIVE_LABEL
-        else:
+        elif score(neg, pos) > self.threshold:
             return NEGATIVE_LABEL
+        else:
+            return UNKNOWN_LABEL
 
 
 if __name__ == '__main__':
