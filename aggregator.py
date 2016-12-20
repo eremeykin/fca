@@ -98,6 +98,7 @@ class Aggregator(object):
         plt.show()
 
     def next(self):
+        print('last result: '+str(self.counter))
         self.counters.append(self.counter)
         self.counter = ScoreCounter()
 

@@ -38,6 +38,7 @@ def _expand_feature(feature, dframe):
 def get_raw_data(file_name):
     """ returns data as is, in multi-valued form """
     data = pd.read_csv('data_set/' + file_name, index_col=False)
+    data = data.sample(frac=1, random_state=22362 )
     return data
 
 
