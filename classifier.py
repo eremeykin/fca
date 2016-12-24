@@ -1,7 +1,6 @@
 import random
 
 from data_preparation import *
-from labels import *
 import numpy as np
 import pandas as pd
 

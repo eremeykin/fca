@@ -1,6 +1,12 @@
 __author__ = 'eremeykin'
 import pandas as pd
 
+POSITIVE_LABEL = 'e'
+NEGATIVE_LABEL = 'p'
+UNKNOWN_LABEL = 'u'
+BOTH_LABEL = 'b'
+
+
 headers = {
     '0': 'label',
     '1': 'cap-shape',
