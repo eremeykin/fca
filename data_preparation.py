@@ -60,8 +60,8 @@ def get_data(file_name):
         data = _expand_feature(df[f], data)
     return data
 
-
-
 if __name__ == "__main__":
-    d = get_data('data0.csv')
-    print(d)
+    d_bin = get_data('data.csv')
+    d_raw = get_raw_data('data.csv')
+    print(d_bin.shape)
+    print(d_raw.shape)

@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 def intersect(row1, row2):
     if not isinstance(row1, pd.Series) or not isinstance(row2, pd.Series):
         raise Exception('Wrong type: row1-> ' + str(type(row1)) +
@@ -19,12 +18,11 @@ def issuper(sup, sub):
     return sup[sub.index].equals(sub)
 
 
-
 if __name__ == "__main__":
     import pandas as pd
+    import numpy as np
 
     df1 = pd.Series(['x', 'y', 'z', 'u', 'i', 'p'], index=['a', 'b', 'c', 'd', 'e', 'f'])
-    import numpy as np
     df2 = pd.Series(['x', 'y', 'z', 'u', 'i', np.nan], index=['a', 'b', 'c', 'd', 'e', 'f'])
     print(df1)
     print(df2)

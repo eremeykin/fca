@@ -1,9 +1,12 @@
-from aggregator import Aggregator
-from classifier import *
-from data_preparation import *
-from pprint import pprint
 import math
-import numpy as np
+from pprint import pprint
+
+from aggregator import Aggregator
+from classifiers.abstract_classifier import *
+from classifiers import *
+from classifiers.implication_classifier import ImplicationClassifier
+from classifiers.my_classifier import MyClassifier
+from data_preparation import *
 
 __author__ = 'eremeykin'
 
@@ -25,25 +28,21 @@ class Validator(object):
                 append(self.data[last:])
             self.classifier.train(train_data)
             for index, example in test_data.iterrows():
-                # print(example)
                 p_result = self.classifier.predict(example)
+                print(index)
                 self.aggregator.count(example, p_result)
             self.aggregator.next()
 
 
 def try_one():
-    d = get_raw_data('data.csv')
-    print('Enter example with format:' + str(d.columns))
+    c.train(d[:])
+    print('Enter example with format:' + str(' '.join(d.columns[1:])))
     inp = input('>>')
     target = pd.Series(data=inp.split(','), index=d.columns)
-    c = MyClassifier(1)
-    c.train(d[:100])
     print(c.predict(target))
 
 
 def validate():
-    d = get_raw_data('data.csv')[:500]  # .sample(n=4000, random_state=8755)
-    c = MyFcaClassifier()
     val = Validator(d, c)
     val.validate(test_frame=0.1)
     agr = val.aggregator.get_norm_aggregate()
@@ -53,6 +52,8 @@ def validate():
 
 if __name__ == "__main__":
     MODE = 'VALIDATE'
+    d = get_raw_data('data.csv')[:500]
+    c = ImplicationClassifier(1)
     if MODE == 'TRY ONE':
         try_one()
     elif MODE == 'VALIDATE':
