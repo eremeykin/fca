@@ -1,28 +1,37 @@
-from close_by_one import *
 from numpy_set_operations import intersect, issuper
 
 __author__ = 'eremeykin'
 import pandas as pd
 
+class Descr(object):
+    WIDE = "WIDE"
+    SPECIFIC = "SPECIFIC"
 
 class Context(object):
     def __init__(self, matrix):
         self.df = matrix
         self.g_size = self.df.shape[0]
         self.m_size = self.df.shape[1]
+        self.names = sorted(list(self.df.index))
+        self.attributes = sorted(list(self.df.columns))
 
     def g_to_d(self, objects):
         if len(objects) < 1:
-            return None
+            return Descr.SPECIFIC
         res = self.df.loc[objects[0]]
         for obj in objects[1:]:
             res = intersect(res, self.df.loc[obj])
+        if len(res) < 1:
+            return Descr.WIDE
         return res
 
     @staticmethod
     def fit(what, description):
-        if description is None:
-            return True
+        if isinstance(description, str):
+            if description == Descr.WIDE:
+                return True
+            if description == Descr.SPECIFIC:
+                return False
         return what[description.index].equals(description)
 
     def d_to_g(self, descr):
@@ -30,15 +39,17 @@ class Context(object):
         return list(self.df[meets].index)
 
     def objects_names(self):
-        return sorted(list(self.df.index))
+        return self.names
 
     def attributes_names(self):
-        return sorted(list(self.df.columns))
+        return self.attributes
 
     def transpose(self):
         self.df = self.df.transpose()
         self.g_size = self.df.shape[0]
         self.m_size = self.df.shape[1]
+        self.names = sorted(list(self.df.index))
+        self.attributes = sorted(list(self.df.columns))
 
     def __str__(self):
         return str(self.df)
@@ -72,12 +83,27 @@ if __name__ == "__main__":
                             ['b', 'y', 'w', 't']], index=['g1', 'g2', 'g3', 'g4', 'g5'],
                       columns=['m1', 'm2', 'm3', 'm4'])
     c = Context(df)
-    print(c)
-    print()
-
+    # print(c)
+    # print()
+    # print(c.g_to_d(['g1', 'g2', 'g3', 'g4', 'g5']))
+    # exit()
     from pprint import pprint
-    print(len(close_by_one(c)))
-    for concept in close_by_one(c):
-        print()
-        pprint(concept)
+    #
+    # for c in close_by_one(c):
+    #     print()
+    #     print(c)
+    from close_by_one import *
+    root = close_by_one(c)
+    opened = [root]
+    while opened:
+        current = opened.pop()
+        print('current:' + str(current))
+        print('children: ')
+        for child in current.children:
+            print()
+            print(child)
+            opened.append(child)
+        print('________________')
+
+
 

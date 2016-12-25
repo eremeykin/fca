@@ -24,8 +24,10 @@ class Vertex():
         g_to_d = self.context.g_to_d(self.obj)
         d_to_g = self.context.d_to_g(g_to_d)
         rest = sorted([x for x in d_to_g if x not in self.obj])
+        self.concept = Concept(d_to_g, g_to_d)
         self.obj = self.obj + rest
         self.closed = True
+
 
     def is_canonical(self):
         return self.obj == sorted(self.obj)
@@ -39,37 +41,30 @@ class Vertex():
         return hash(tuple(self.obj))
 
     def __str__(self):
-        return "G:(" + ','.join([str(x) for x in self.obj]) + ")"
+        s = '?'
+        if hasattr(self, 'concept'):
+            s = str(self.concept.m)
+        return "G:(" + ','.join([str(x) for x in self.obj]) + ");"  # M:\n(" + s + ')'
 
     def __repr__(self):
-        return "G:(" + ','.join([str(x) for x in self.obj]) + ")"
+        return str(self)
 
 
-def __derive(context, result, vertex):
-    # print(vertex)
+def __derive(context, vertex, all_concepts):
     children = vertex.generate_children()
     vertex.close()
+    print('in')
     if vertex.is_canonical():
-        result.add(vertex)
-        print(vertex)
+        all_concepts.add(vertex.concept)
+        print(len(all_concepts), vertex.concept)
         for child in children:
-            __derive(context, result, child)
+            __derive(context, child, all_concepts)
 
 
 def close_by_one(context):
-    res = []
-    # transposed = False
-    # if context.g_size > context.m_size:
-    #     context.transpose()
-    #     transposed = True
-    vertices = set()
-    __derive(context, vertices, Vertex(context, []))
-    for v in vertices:
-        item = Concept(v.obj, context.g_to_d(v.obj))
-        # if transposed:
-        #     item = Concept(context.g_to_d(v.obj), v.obj)
-        res.append(item)
-    return res
+    concepts = set()
+    __derive(context, Vertex(context, []), concepts)
+    return build_lattice(list(concepts))
 
 
 def istransitive(parent, child):
@@ -86,7 +81,9 @@ def istransitive(parent, child):
 
 
 def build_lattice(concepts):
+    print('build_lattice')
     concepts.sort(key=lambda x: len(x.g), reverse=True)  # descending
+    root = concepts[0]
     for level in range(len(concepts)):
         c = concepts[level]
         for k in reversed(range(level)):
@@ -94,25 +91,19 @@ def build_lattice(concepts):
             if set(c.g).issubset(oc.g) and not istransitive(oc, c):
                 c.parents.add(oc)
                 oc.children.add(c)
+    return root
 
 
 if __name__ == '__main__':
-    data = [[1, 0, 0, 1], [1, 0, 1, 0], [0, 1, 1, 0], [0, 1, 1, 1]]
-    col = ['a','b','c','d']
-    ind = ['1','2','3','4']
-    # ind = ['g'+str(i) for i in range(len(data))]
-    # col = ['m'+str(j) for j in range(len(data[0]))]
-    df = pd.DataFrame(data=data, index=ind, columns=col)
-    ctx1 = Context(df)
-    print(ctx1)
-    print()
-    concepts = close_by_one(ctx1)
-    pprint(concepts)
-    print(len(concepts))
-
-    build_lattice(concepts)
-    for c in concepts:
-        print('___________________')
-        print(str(c) + ' : ')
-        print(c.children)
-
+    from context import  *
+    df = pd.DataFrame(data=[['x', 's', 'n', 't'],
+                            ['x', 's', 'y', 't'],
+                            ['b', 's', 'w', 't'],
+                            ['x', 'y', 'w', 't'],
+                            ['b', 'y', 'w', 't']], index=['g1', 'g2', 'g3', 'g4', 'g5'],
+                      columns=['m1', 'm2', 'm3', 'm4'])
+    c = Context(df)
+    v = Vertex(c, ['g4','g5'])
+    print(v.generate_children())
+    v.close()
+    print(v)

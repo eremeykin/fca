@@ -8,7 +8,7 @@ class Concept():
         self.parents = set()
 
     def __str__(self):
-        return "{G:" + str(self.g) + "; \nM:\n" + str(self.m) + "}"
+        return "{G:" + str(self.g) + ";"  # \nM:\n" + str(self.m) + "}"
 
     def __repr__(self):
         return str(self)
@@ -19,4 +19,4 @@ class Concept():
     def __eq__(self, other):
         if other is None:
             return False
-        return self.g == other.g and self.m == other.m
+        return self.g == other.g
