@@ -8,13 +8,13 @@ class Concept():
         self.parents = set()
 
     def __str__(self):
-        return "{G:" + str(self.g) + "; \nM:" + str(self.m) + "}"
+        return "{G:" + str(self.g) + "; \nM:\n" + str(self.m) + "}"
 
     def __repr__(self):
         return str(self)
 
     def __hash__(self):
-        return hash("{G:" + str(self.g) + "; \nM:" + str(self.m) + "}")
+        return hash("{G:" + str(self.g) + "; \nM:\n" + str(self.m) + "}")
 
     def __eq__(self, other):
         if other is None:

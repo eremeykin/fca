@@ -46,26 +46,28 @@ class Vertex():
 
 
 def __derive(context, result, vertex):
+    # print(vertex)
     children = vertex.generate_children()
     vertex.close()
     if vertex.is_canonical():
         result.add(vertex)
+        print(vertex)
         for child in children:
             __derive(context, result, child)
 
 
 def close_by_one(context):
     res = []
-    transposed = False
-    if context.g_size > context.m_size:
-        context.transpose()
-        transposed = True
+    # transposed = False
+    # if context.g_size > context.m_size:
+    #     context.transpose()
+    #     transposed = True
     vertices = set()
     __derive(context, vertices, Vertex(context, []))
     for v in vertices:
         item = Concept(v.obj, context.g_to_d(v.obj))
-        if transposed:
-            item = Concept(context.g_to_d(v.obj), v.obj)
+        # if transposed:
+        #     item = Concept(context.g_to_d(v.obj), v.obj)
         res.append(item)
     return res
 

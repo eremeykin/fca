@@ -55,26 +55,28 @@ if __name__ == "__main__":
                       columns=['m1', 'm2', 'm3', 'm4'])
     c = Context(df)
 
-    df = pd.DataFrame(data=[['p', 'x', 's', 'n', 't'],
-                            ['e', 'x', 's', 'y', 't'],
-                            ['e', 'b', 's', 'w', 't'],
-                            ['p', 'x', 'y', 'w', 't'],
-                            ['e', 'x', 's', 'g', 'f'],
-                            ['e', 'x', 'y', 'y', 't'],
-                            ['e', 'b', 's', 'w', 't'],
-                            ['e', 'b', 'y', 'w', 't']], index=['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8'],
-                      columns=['label', 'm1', 'm2', 'm3', 'm4'])
+    df = pd.DataFrame(data=[['x', 's', 'n', 't'],
+                            ['x', 's', 'y', 't'],
+                            ['b', 's', 'w', 't'],
+                            ['x', 'y', 'w', 't'],
+                            ['x', 's', 'g', 'f'],
+                            ['x', 'y', 'y', 't'],
+                            ['b', 's', 'w', 't'],
+                            ['b', 'y', 'w', 't']], index=['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8'],
+                      columns=['m1', 'm2', 'm3', 'm4'])
+
+    df = pd.DataFrame(data=[['x', 's', 'n', 't'],
+                            ['x', 's', 'y', 't'],
+                            ['b', 's', 'w', 't'],
+                            ['x', 'y', 'w', 't'],
+                            ['b', 'y', 'w', 't']], index=['g1', 'g2', 'g3', 'g4', 'g5'],
+                      columns=['m1', 'm2', 'm3', 'm4'])
     c = Context(df)
     print(c)
-    # print(c.m_to_g(['m1', 'm3']))
     print()
-    # print(c.g_to_d(['g1', 'g2', 'g5']))
-    dscr = c.g_to_d(['g1', 'g2', 'g5'])
-    # print(c.d_to_g(dscr))
-    # print(c.d_to_g(pd.Series(data=['b', 's', 'w'], index=['m1', 'm2', 'm3'])))
 
-    print(c.d_to_g(c.g_to_d([])))
     from pprint import pprint
+    print(len(close_by_one(c)))
     for concept in close_by_one(c):
         print()
         pprint(concept)
