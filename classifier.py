@@ -1,9 +1,10 @@
 import random
 
+from close_by_one import *
 from data_preparation import *
 import numpy as np
 import pandas as pd
-
+from context import Context
 from numpy_set_operations import *
 from pprint import pprint
 
@@ -176,6 +177,12 @@ class MyFcaClassifier(AbstractClassifier):
 
     def train(self, train_data):
         super().train(train_data)
+        self.p_context = Context(self.positive)
+        self.n_context = Context(self.positive)
+        close_by_one(self.p_context)
+        print('done')
+        exit()
+
         self.p_cache = MyFcaClassifier.Cache()
         self.n_cache = MyFcaClassifier.Cache()
 
@@ -185,6 +192,8 @@ class MyFcaClassifier(AbstractClassifier):
 
     def predict(self, target, num_sub=None):
         self.i = 0
+        from time import time
+        start = time()
 
         def test_hypothesis(hyp, type):
             if type == POSITIVE_LABEL:
@@ -204,7 +213,7 @@ class MyFcaClassifier(AbstractClassifier):
                     cache.add(hyp, 0)
                     # print('j=0..' + str(j))
                     return 0
-            # print('j=0..' + str(j))
+            print('j=0..' + str(j))
             cache.add(hyp, 1)
             return 1
 
@@ -221,6 +230,8 @@ class MyFcaClassifier(AbstractClassifier):
         neg_score = neg_hypothesis.apply(lambda x: test_hypothesis(x.dropna(), NEGATIVE_LABEL), axis=1).sum() / len(
             neg_hypothesis)
 
+        end = time()
+        print(end - start)
         print('ps = ' + str(pos_score))
         print('neg = ' + str(neg_score))
         if pos_score > neg_score:

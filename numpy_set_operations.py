@@ -3,8 +3,8 @@ import pandas as pd
 
 def intersect(row1, row2):
     if not isinstance(row1, pd.Series) or not isinstance(row2, pd.Series):
-        raise Exception('Wrong type: sup-> ' + str(type(sup)) +
-                        ' sub-> ' + str(type(sub)) +
+        raise Exception('Wrong type: row1-> ' + str(type(row1)) +
+                        ' row2-> ' + str(type(row2)) +
                         ' Must be pandas.Series')
     row1 = row1[row2.index]
     return row1[row1 == row2]
