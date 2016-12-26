@@ -103,4 +103,4 @@ if __name__ == "__main__":
     elif MODE == "THRESHOLD":
         define_threshold()
     end = time()
-    print(start - end)
+    print(end - start)
