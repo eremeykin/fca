@@ -4,18 +4,19 @@ from classifiers.abstract_classifier import AbstractClassifier
 from data_preparation import *
 
 
-class MyClassifier(AbstractClassifier):
-    def __init__(self, threshold):
+class MyThirdClassifier(AbstractClassifier):
+    def __init__(self, threshold, power):
         super().__init__(threshold)
+        self.power = power
 
     def train(self, train_data):
         super().train(train_data)
         self.neg_dict = dict()
         self.pos_dict = dict()
         for c in self.positive.columns:
-            self.pos_dict[c] = (self.positive[c].value_counts() / self.positive[c].value_counts().sum())
+            self.pos_dict[c] = (self.positive[c].value_counts() / self.positive[c].value_counts().sum()) ** self.power
         for c in self.negative.columns:
-            self.neg_dict[c] = (self.negative[c].value_counts() / self.negative[c].value_counts().sum())
+            self.neg_dict[c] = (self.negative[c].value_counts() / self.negative[c].value_counts().sum()) ** self.power
 
     def predict(self, target, num_sub=None):
         target = target[:]
@@ -39,7 +40,7 @@ class MyClassifier(AbstractClassifier):
         def score(pos, neg):
             if pos < 0: pos = 0
             if neg < 0: neg = 0
-            return pos * 1. / neg + 1
+            return pos * 1. / neg if neg != 0 else np.infty
 
         if score(pos, neg) > self.threshold:
             return POSITIVE_LABEL
