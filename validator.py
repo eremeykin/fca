@@ -4,8 +4,10 @@ from pprint import pprint
 from aggregator import Aggregator
 from classifiers.abstract_classifier import *
 from classifiers import *
+from classifiers.cached_implication_classifier import CachedImplicationClassifier
 from classifiers.implication_classifier import ImplicationClassifier
 from classifiers.my_classifier import MyClassifier
+from classifiers.heuristics_classifier import HeuristicsClassifier
 from data_preparation import *
 
 __author__ = 'eremeykin'
@@ -53,8 +55,12 @@ def validate():
 if __name__ == "__main__":
     MODE = 'VALIDATE'
     d = get_raw_data('data.csv')[:500]
-    c = ImplicationClassifier(1)
+    c = HeuristicsClassifier(0.8)
     if MODE == 'TRY ONE':
         try_one()
     elif MODE == 'VALIDATE':
+        from time import time
+        start = time()
         validate()
+        end = time()
+        print(start-end)

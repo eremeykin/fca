@@ -21,6 +21,4 @@ class AbstractClassifier(object):
         raise Exception('abstract method')
 
 if __name__ == '__main__':
-    data = get_raw_data('data.csv')
-    train = data.iloc[:8]
-    test = data.iloc[8:]
+    print('Nothing to do. Just AbstractClassifier description')

@@ -7,11 +7,11 @@ from data_preparation import *
 class MyClassifier(AbstractClassifier):
     def __init__(self, threshold):
         super().__init__(threshold)
-        self.neg_dict = dict()
-        self.pos_dict = dict()
 
     def train(self, train_data):
         super().train(train_data)
+        self.neg_dict = dict()
+        self.pos_dict = dict()
         for c in self.positive.columns:
             self.pos_dict[c] = (self.positive[c].value_counts() / self.positive[c].value_counts().sum()) ** 4
         for c in self.negative.columns:

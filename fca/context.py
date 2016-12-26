@@ -18,6 +18,7 @@ class Context(object):
         self.attributes = list(self.df.columns)
 
     def g_to_d(self, objects):
+        """transform object to description"""
         if len(objects) < 1:
             return Descr.SPECIFIC
         res = self.df.loc[objects[0]]
@@ -37,6 +38,7 @@ class Context(object):
         return what[description.index].equals(description)
 
     def d_to_g(self, descr):
+        """transform description to objects"""
         meets = self.df.apply(lambda x: Context.fit(x, descr), axis=1)
         return list(self.df[meets].index)
 
@@ -50,8 +52,8 @@ class Context(object):
         self.df = self.df.transpose()
         self.g_size = self.df.shape[0]
         self.m_size = self.df.shape[1]
-        self.names = sorted(list(self.df.index))
-        self.attributes = sorted(list(self.df.columns))
+        self.names = list(self.df.index)
+        self.attributes = list(self.df.columns)
 
     def __str__(self):
         return str(self.df)
